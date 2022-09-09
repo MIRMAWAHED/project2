@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel&family=Cinzel+Decorative&family=Noto+Sans+Buhid&family=Poppins:wght@100&display=swap');
+    </style>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            /* font-family: 'Poppins', sans-serif; */
+            /* font-family: 'Cinzel', serif; */
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        ::selection {
+            /* color: red; */
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        /* .con{
+         position: relative;
+        } */
+        .con2 {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            /* background-color: aqua; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* top: auto;
+            bottom: auto;
+            right:auto; */
+        }
+
+        .con3 {
+            /* background-color: blue; */
+            color: white;
+            padding: 20px;
+            width: 50vw;
+            height: 60vh;
+            box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-left: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="con" id="con">
+        <div class="con2">
+            <div class="con3">
+                <h1>Mir Mawahed Ali</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio, quibusdam.
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus facere aperiam magnam, ullam deleniti
+                    sint soluta ad illum consectetur saepe praesentium, dolor illo voluptatibus animi recusandae. Sed
+                    fugiat vero modi minus, cupiditate expedita quod odit hic adipisci quaerat deserunt velit magnam
+                    ipsa eos, suscipit delectus facilis odio aperiam, a at quibusdam cum qui aliquam error? Natus illo
+                    fugiat tempora dignissimos recusandae ipsam unde minus placeat! Incidunt sapiente fugiat quidem quas
+                    in vitae rerum veniam eius aliquid vero, mollitia et illo consequuntur repellat enim eum suscipit a
+                    doloremque, cum voluptatem? Eaque fuga praesentium beatae autem aliquam a tempora quisquam
+                    laboriosam inventore!
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.126.1/build/three.module.js'
+        import { OrbitControls } from 'https://unpkg.com/three@0.126.1/examples/jsm/controls/OrbitControls.js'
+        const scene = new THREE.Scene()
+        const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000)
+        const render = new THREE.WebGLRenderer()
+        document.body.appendChild(render.domElement)
+        const raycaster = new THREE.Raycaster()
+        const a = document.getElementById('con')
+        a.appendChild(render.domElement)
+        render.setSize(innerWidth, innerHeight - 1)
+        render.setPixelRatio(devicePixelRatio)
+        const plane = new THREE.PlaneGeometry(150, 150, 18, 18)
+        const planemeterial = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, flatShading: THREE.FlatShading, vertexColors: true })
+        const mesh = new THREE.Mesh(plane, planemeterial)
+        scene.add(mesh)
+        // console.log(mesh)
+        camera.position.z = 45
+       console.log(camera)
+       camera.lookAt(4,30,0);
+       camera.rotation.z += Math.PI/2
+       camera.updateProjectionMatrix();
+        //////////////////////////////////////////
+        new OrbitControls(camera, render.domElement)
+        const light = new THREE.DirectionalLight(0xeb3440, 5)
+        light.position.set(0, 1, 13)
+        scene.add(light)
+        const light2 = new THREE.DirectionalLight(0xffffff, 1)
+        light2.position.set(0, 0, -1)
+        scene.add(light2)
+        // const aa=mesh.geometry.attributes.position.array
+        // console.log(aa)
+        const array = mesh.geometry.attributes.position.array
+        const randomValues = []
+        for (let i = 0; i < array.length; i++) {
+            if (i % 3 === 0) {
+                let x = array[i]
+                let y = array[i + 1]
+                let z = array[i + 2]
+                // array[i + 0] = x + Math.random()
+                // array[i + 1] = y + Math.random()
+                array[i + 2] = z + Math.random() * 3
+            }
+            randomValues.push(Math.random())
+            //    console.log(i)
+        }
+        mesh.geometry.attributes.position.randomValues = randomValues
+        mesh.geometry.attributes.position.originalPosition = mesh.geometry.attributes.position.array
+        const mouse = {
+            x: undefined,
+            y: undefined
+        }
+        const colors = []
+        // const r = Math.random()
+        // const g = Math.random()
+        // const b = Math.random()
+        const r = 0
+        const g = 0
+        const b = 0
+        for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+
+            colors.push(r, g, b)
+
+        }
+        console.log(mesh)
+        mesh.geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3))
+        var frame = 0
+        function animate() {
+            requestAnimationFrame(animate)
+            // mesh.rotation.z+=0.01
+            // mesh.rotation.x -= 0.01 
+            render.render(scene, camera)
+            // mesh.rotation.x += 0.01 
+            // mesh.rotation.y+=0.01
+            ////////////
+            // for (let i = 0; i < array.length; i += 3) {
+            //     mesh.geometry.attributes.position.array[i] = Math.floor(Math.random() + 0.5) ? array[i] + Math.cos(Math.random()) * 0.03 : array[i] - Math.cos(Math.random()) * 0.03
+            //     mesh.geometry.attributes.position.array[i + 1] = Math.floor(Math.random() + 0.5) ? array[i + 1] + Math.cos(Math.random()) * 0.03 : array[i + 1] - Math.cos(Math.random()) * 0.03
+            //     mesh.geometry.attributes.position.array[i + 2] = Math.floor(Math.random() + 0.5) ? array[i + 2] + Math.cos(Math.random()) * 0.03 : array[i + 2] - Math.cos(Math.random()) * 0.03
+            // }
+            frame += 0.01
+            const { array, originalPosition } = mesh.geometry.attributes.position
+            for (let i = 0; i < array.length; i += 3) {
+                array[i] = originalPosition[i] + Math.cos(frame + randomValues[i]) * 0.03
+                array[i + 1] = originalPosition[i + 1] + Math.sin(frame + randomValues[i + 1]) * 0.03
+                array[i + 2] = originalPosition[i + 2] + Math.sin(frame + randomValues[i + 2]) * 0.01
+                mesh.geometry.attributes.position.needsUpdate = true
+            }
+            raycaster.setFromCamera(mouse, camera)
+            const intersect = raycaster.intersectObjects(scene.children)
+            const hcolor = 0.3
+            if (intersect.length > 0) {
+                intersect[0].object.geometry.attributes.color.setX(intersect[0].face.a, hcolor)
+                intersect[0].object.geometry.attributes.color.setY(intersect[0].face.a, hcolor)
+                intersect[0].object.geometry.attributes.color.setZ(intersect[0].face.a, hcolor)
+                ///////
+                intersect[0].object.geometry.attributes.color.setX(intersect[0].face.b, hcolor)
+                intersect[0].object.geometry.attributes.color.setY(intersect[0].face.b, hcolor)
+                intersect[0].object.geometry.attributes.color.setZ(intersect[0].face.b, hcolor)
+                /////
+                intersect[0].object.geometry.attributes.color.setX(intersect[0].face.c, hcolor)
+                intersect[0].object.geometry.attributes.color.setY(intersect[0].face.c, hcolor)
+                intersect[0].object.geometry.attributes.color.setZ(intersect[0].face.c, hcolor)
+                intersect[0].object.geometry.attributes.color.needsUpdate = true
+                setTimeout(() => {
+                    intersect[0].object.geometry.attributes.color.setX(intersect[0].face.a, r)
+                    intersect[0].object.geometry.attributes.color.setY(intersect[0].face.a, g)
+                    intersect[0].object.geometry.attributes.color.setZ(intersect[0].face.a, b)
+                    ///
+                    intersect[0].object.geometry.attributes.color.setX(intersect[0].face.b, r)
+                    intersect[0].object.geometry.attributes.color.setY(intersect[0].face.b, g)
+                    intersect[0].object.geometry.attributes.color.setZ(intersect[0].face.b, b)
+                    ////
+                    intersect[0].object.geometry.attributes.color.setX(intersect[0].face.c, r)
+                    intersect[0].object.geometry.attributes.color.setY(intersect[0].face.c, g)
+                    intersect[0].object.geometry.attributes.color.setZ(intersect[0].face.c, b)
+                }, 100)
+            }
+
+
+
+
+        }
+        animate()
+        addEventListener('mousemove', (event) => {
+            mouse.x = (event.clientX / innerWidth) * 2 - 1
+            mouse.y = -(event.clientY / innerHeight) * 2 + 1
+            // mouse.x = ( (event.clientX + canvas.offsetLeft) / canvas.width ) * 2 - 1;
+            // mouse.y = - ( (event.clientY - canvas.offsetTop) / canvas.height ) * 2 + 1;
+            // console.log(mouse)
+        })
+// a=09
+    </script>
+</body>
+
+</html>
